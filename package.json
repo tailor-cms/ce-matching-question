@@ -1,5 +1,5 @@
 {
-  "name": "ce-matching-question",
+  "name": "@tailor-cms/ce-matching-question",
   "description": "Tailor CMS matching question element",
   "version": "0.0.1",
   "author": "Studion <info@gostudion.com> (https://github.com/tailor-cms)",
