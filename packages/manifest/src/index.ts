@@ -19,6 +19,7 @@ export const name = 'Matching question';
 // entity)
 export const initState: DataInitializer = (): ElementData => ({
   question: '',
+  headings: { premise: 'Premise', response: 'Response' },
   premises,
   responses,
   correct: {

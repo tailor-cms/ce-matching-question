@@ -5,6 +5,7 @@ interface DataInput {
 
 export interface ElementData {
   question: string;
+  headings: Record<string, string>;
   premises: DataInput[];
   responses: DataInput[];
   correct: Record<string, string>;
