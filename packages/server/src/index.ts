@@ -1,6 +1,8 @@
 import type { HookServices, ServerRuntime } from '@tailor-cms/cek-common';
 import { initState, mocks, type } from '@tailor-cms/ce-matching-question-manifest';
 import type { Element } from '@tailor-cms/ce-matching-question-manifest';
+import omit from 'lodash/omit.js';
+import every from 'lodash/every.js';
 
 // Detect if hooks are running in CEK (used for mocking end-system runtime)
 const IS_CEK = process.env.CEK_RUNTIME;
@@ -24,6 +26,10 @@ export function afterLoaded(
   runtime: ServerRuntime,
 ) {
   console.log('After loaded hook');
+  if (runtime === 'delivery') {
+    const data = omit(element.data, ['correct']);
+    return Object.assign(element, { data });
+  }
   return element;
 }
 
@@ -40,7 +46,7 @@ export function afterRetrieve(
 export function beforeDisplay(element: Element, context: any) {
   console.log('beforeDisplay hook');
   console.log('beforeDisplay context', context);
-  return { ...context, ...USER_STATE };
+  return { ...context, ...USER_STATE, correct: element.data.correct };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -50,13 +56,13 @@ export function onUserInteraction(
   payload: any,
 ): any {
   console.log('onUserInteraction', context, payload);
+  const isCorrect = every(element.data.correct, (it, id) => {
+    return it === payload.response[id];
+  });
   // Simulate user state update within CEK
   if (IS_CEK) {
-    // Only for showcase purposes
-    USER_STATE.interactionTimestamp = new Date().getTime();
     // Can be reset to initial / mocked state via UI
-    context.contextTimestamp = USER_STATE.interactionTimestamp;
-    Object.assign(USER_STATE, payload);
+    Object.assign(context, { response: payload.response, isCorrect });
   }
   // Can have arbitrary return value (interpreted by target system)
   // FE is updated if updateDisplayState is true
