@@ -14,63 +14,77 @@
       rows="3"
       auto-grow
     />
-    <div class="d-flex align-center justify-center">
-      <VTextField
-        :model-value="elementData.headings.premise"
-        :readonly="isDisabled"
-        :rules="[requiredRule]"
-        placeholder="Response value..."
-        @update:model-value="updateHeading('premise', $event)"
-      />
-      <VTextField
-        :model-value="elementData.headings.response"
-        :readonly="isDisabled"
-        :rules="[requiredRule]"
-        placeholder="Response value..."
-        @update:model-value="updateHeading('response', $event)"
-      />
-    </div>
+    <div class="text-subtitle-2 mb-2">Answers</div>
+    <VRow>
+      <VCol cols="4" offset="1">
+        <VTextField
+          :model-value="elementData.headings.premise"
+          :readonly="isDisabled"
+          :rules="[requiredRule]"
+          label="Premise heading"
+          @update:model-value="updateHeading('premise', $event)"
+        />
+      </VCol>
+      <VCol cols="4" offset="2">
+        <VTextField
+          :model-value="elementData.headings.response"
+          :readonly="isDisabled"
+          :rules="[requiredRule]"
+          label="Response heading"
+          @update:model-value="updateHeading('response', $event)"
+        />
+      </VCol>
+    </VRow>
     <VSlideYTransition group>
-      <div
+      <VRow
         v-for="(responseKey, premiseKey) in elementData.correct"
         :key="responseKey"
-        class="d-flex align-center justify-center"
       >
-        <VTextField
-          :model-value="getPremiseContent(premiseKey)"
-          :readonly="isDisabled"
-          :rules="[requiredRule]"
-          placeholder="Premise value..."
-          @update:model-value="updatePremiseContent(premiseKey, $event)"
-        />
-        <VIcon icon="mdi-arrow-right" />
-        <VTextField
-          :model-value="getResponseContent(responseKey)"
-          :readonly="isDisabled"
-          :rules="[requiredRule]"
-          placeholder="Response value..."
-          @update:model-value="updateResponseContent(responseKey, $event)"
-        />
-        <VBtn
-          v-if="!isDisabled && pairsCount > 2"
-          aria-label="Remove answer"
-          density="comfortable"
-          icon="mdi-close"
-          variant="text"
-          @click="removeItem(premiseKey, responseKey)"
-        />
-      </div>
+        <VCol cols="4" offset="1">
+          <VTextField
+            :model-value="getPremiseContent(premiseKey)"
+            :readonly="isDisabled"
+            :rules="[requiredRule]"
+            placeholder="Premise value..."
+            @update:model-value="updatePremiseContent(premiseKey, $event)"
+          />
+        </VCol>
+        <VCol class="text-center" cols="2">
+          <VIcon class="my-4" icon="mdi-arrow-right" size="small" />
+        </VCol>
+        <VCol cols="4">
+          <VTextField
+            :model-value="getResponseContent(responseKey)"
+            :readonly="isDisabled"
+            :rules="[requiredRule]"
+            placeholder="Response value..."
+            @update:model-value="updateResponseContent(responseKey, $event)"
+          />
+        </VCol>
+        <VCol cols="1">
+          <VBtn
+            v-if="!isDisabled && pairsCount > PAIRS_LIMIT.MIN"
+            aria-label="Remove answer"
+            class="my-4"
+            density="comfortable"
+            icon="mdi-close"
+            size="small"
+            variant="text"
+            @click="removeItem(premiseKey, responseKey)"
+          />
+        </VCol>
+      </VRow>
     </VSlideYTransition>
     <div class="d-flex justify-center align-center mb-2">
       <VBtn
-        v-if="!isDisabled"
+        v-if="!isDisabled && pairsCount < PAIRS_LIMIT.MAX"
+        class="mt-4"
         prepend-icon="mdi-plus"
-        size="small"
         variant="text"
         rounded
         @click="addItem"
       >
-        Add Answer
+        Add Pair
       </VBtn>
     </div>
     <div v-if="!isDisabled" class="d-flex justify-end">
@@ -94,6 +108,11 @@ import isEqual from 'lodash/isEqual';
 import pull from 'lodash/pull';
 import size from 'lodash/size';
 import { v4 as uuid } from 'uuid';
+
+const PAIRS_LIMIT = Object.freeze({
+  MIN: 2,
+  MAX: 10,
+});
 
 const emit = defineEmits(['save']);
 const props = defineProps<{

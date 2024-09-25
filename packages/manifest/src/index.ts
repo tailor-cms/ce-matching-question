@@ -6,8 +6,8 @@ import type {
   ElementManifest,
 } from './interfaces';
 
-const premises = Array.from({ length: 3 }, () => ({ key: uuid(), value: '' }));
-const responses = Array.from({ length: 3 }, () => ({ key: uuid(), value: '' }));
+const premises = Array.from({ length: 2 }, () => ({ key: uuid(), value: '' }));
+const responses = Array.from({ length: 2 }, () => ({ key: uuid(), value: '' }));
 
 // Element unique id within the target system (e.g. Tailor)
 export const type = 'CE_MATCHING_QUESTION';
@@ -25,7 +25,6 @@ export const initState: DataInitializer = (): ElementData => ({
   correct: {
     [premises[0].key]: responses[0].key,
     [premises[1].key]: responses[1].key,
-    [premises[2].key]: responses[2].key,
   },
 });
 
