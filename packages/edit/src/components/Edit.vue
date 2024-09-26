@@ -106,6 +106,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import find from 'lodash/find';
 import isEqual from 'lodash/isEqual';
 import pull from 'lodash/pull';
+import shuffle from 'lodash/shuffle';
 import size from 'lodash/size';
 import { v4 as uuid } from 'uuid';
 
@@ -139,11 +140,13 @@ const updateHeading = (key: string, value: string) => {
 const updatePremiseContent = (key: string, value: string) => {
   const premise = getPremiseItem(key);
   if (premise) premise.value = value;
+  elementData.premises = shuffle(elementData.premises);
 };
 
 const updateResponseContent = (key: string, value: string) => {
   const response = getResponseItem(key);
   if (response) response.value = value;
+  elementData.responses = shuffle(elementData.responses);
 };
 
 const addItem = () => {
@@ -152,6 +155,8 @@ const addItem = () => {
   elementData.premises.push({ key: premiseKey, value: '' });
   elementData.responses.push({ key: responseKey, value: '' });
   elementData.correct[premiseKey] = responseKey;
+  elementData.premises = shuffle(elementData.premises);
+  elementData.responses = shuffle(elementData.responses);
 };
 
 const removeItem = (premiseKey: string, responseKey: string) => {
