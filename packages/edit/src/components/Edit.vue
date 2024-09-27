@@ -103,12 +103,12 @@ import {
   ElementData,
 } from '@tailor-cms/ce-matching-question-manifest';
 import cloneDeep from 'lodash/cloneDeep';
+import { createId as cuid } from '@paralleldrive/cuid2';
 import find from 'lodash/find';
 import isEqual from 'lodash/isEqual';
 import pull from 'lodash/pull';
 import shuffle from 'lodash/shuffle';
 import size from 'lodash/size';
-import { v4 as uuid } from 'uuid';
 
 const PAIRS_LIMIT = Object.freeze({
   MIN: 2,
@@ -150,8 +150,8 @@ const updateResponseContent = (key: string, value: string) => {
 };
 
 const addItem = () => {
-  const premiseKey = uuid();
-  const responseKey = uuid();
+  const premiseKey = cuid();
+  const responseKey = cuid();
   elementData.premises.push({ key: premiseKey, value: '' });
   elementData.responses.push({ key: responseKey, value: '' });
   elementData.correct[premiseKey] = responseKey;
