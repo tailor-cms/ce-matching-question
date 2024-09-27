@@ -1,19 +1,32 @@
+import { createId as cuid } from '@paralleldrive/cuid2';
+
 import type {
   DataInitializer,
   ElementData,
   ElementManifest,
 } from './interfaces';
 
+const premises = Array.from({ length: 2 }, () => ({ key: cuid(), value: '' }));
+const responses = Array.from({ length: 2 }, () => ({ key: cuid(), value: '' }));
+
 // Element unique id within the target system (e.g. Tailor)
-export const type = 'ORG_CUSTOM_ELEMENT';
+export const type = 'CE_MATCHING_QUESTION';
 
 // Display name (e.g. shown to the author)
-export const name = 'Custom element';
+export const name = 'Matching question';
 
 // Function which inits element state (data property on the Content Element
 // entity)
-// e.g. for simple counter component:
-export const initState: DataInitializer = (): ElementData => ({ count: 0 });
+export const initState: DataInitializer = (): ElementData => ({
+  question: '',
+  headings: { premise: 'Premise', response: 'Response' },
+  premises,
+  responses,
+  correct: {
+    [premises[0].key]: responses[0].key,
+    [premises[1].key]: responses[1].key,
+  },
+});
 
 // Can be loaded from package.json
 export const version = '1.0';
@@ -21,17 +34,14 @@ export const version = '1.0';
 // UI configuration for Tailor CMS
 const ui = {
   // Display icon, https://pictogrammers.com/library/mdi/
-  icon: 'mdi-cube',
+  icon: 'mdi-format-columns',
   // Does element support only full width or can be used within layouts
   // (e.g. 50/50 layout)
   forceFullWidth: true,
 };
 
 export const mocks = {
-  displayContexts: [
-    { name: 'Test preset 1', data: { state: 'I have a value' } },
-    { name: 'Test preset 2', data: { state: 'I have a different value' } },
-  ],
+  displayContexts: [{ name: 'No selection', data: {} }],
 };
 
 const manifest: ElementManifest = {

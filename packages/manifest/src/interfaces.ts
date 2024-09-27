@@ -1,6 +1,14 @@
-// Example counter component
+interface DataInput {
+  key: string;
+  value: string;
+}
+
 export interface ElementData {
-  count: number;
+  question: string;
+  headings: Record<string, string>;
+  premises: DataInput[];
+  responses: DataInput[];
+  correct: Record<string, string>;
 }
 
 export interface Element {
