@@ -1,18 +1,17 @@
 <template>
   <VForm
     ref="form"
-    class="tce-container"
+    class="tce-container my-4"
     validate-on="submit"
     @submit.prevent="save"
   >
-    <VTextarea
+    <RichTextEditor
       v-model="elementData.question"
       :readonly="isDisabled"
       :rules="[requiredRule]"
       class="my-3"
       label="Question"
-      rows="3"
-      auto-grow
+      variant="outlined"
     />
     <div class="text-subtitle-2 mb-2">Answers</div>
     <VRow>
@@ -22,6 +21,7 @@
           :readonly="isDisabled"
           :rules="[requiredRule]"
           label="Premise heading"
+          variant="outlined"
           @update:model-value="updateHeading('premise', $event)"
         />
       </VCol>
@@ -31,6 +31,7 @@
           :readonly="isDisabled"
           :rules="[requiredRule]"
           label="Response heading"
+          variant="outlined"
           @update:model-value="updateHeading('response', $event)"
         />
       </VCol>
@@ -46,6 +47,7 @@
             :readonly="isDisabled"
             :rules="[requiredRule]"
             placeholder="Premise value..."
+            variant="outlined"
             @update:model-value="updatePremiseContent(premiseKey, $event)"
           />
         </VCol>
@@ -58,6 +60,7 @@
             :readonly="isDisabled"
             :rules="[requiredRule]"
             placeholder="Response value..."
+            variant="outlined"
             @update:model-value="updateResponseContent(responseKey, $event)"
           />
         </VCol>
@@ -75,9 +78,10 @@
         </VCol>
       </VRow>
     </VSlideYTransition>
-    <div class="d-flex justify-center align-center mb-2">
+    <div class="d-flex justify-center mb-12">
       <VBtn
         v-if="!isDisabled && pairsCount < PAIRS_LIMIT.MAX"
+        color="primary-darken-4"
         class="mt-4"
         prepend-icon="mdi-plus"
         variant="text"
@@ -87,9 +91,29 @@
         Add Pair
       </VBtn>
     </div>
+    <VTextField
+      v-model="elementData.hint"
+      :clearable="!isDisabled"
+      :readonly="isDisabled"
+      placeholder="Optional hint..."
+      variant="outlined"
+    />
     <div v-if="!isDisabled" class="d-flex justify-end">
-      <VBtn :disabled="isDirty" variant="text" @click="cancel">Cancel</VBtn>
-      <VBtn :disabled="isDirty" class="ml-2" type="submit" variant="tonal">
+      <VBtn
+        :disabled="isDirty"
+        color="primary-darken-4"
+        variant="text"
+        @click="cancel"
+      >
+        Cancel
+      </VBtn>
+      <VBtn
+        :disabled="isDirty"
+        class="ml-2"
+        color="primary-darken-3"
+        type="submit"
+        variant="tonal"
+      >
         Save
       </VBtn>
     </div>
@@ -102,6 +126,7 @@ import {
   Element,
   ElementData,
 } from '@tailor-cms/ce-matching-question-manifest';
+import { RichTextEditor } from '@tailor-cms/core-components';
 import cloneDeep from 'lodash/cloneDeep';
 import find from 'lodash/find';
 import isEqual from 'lodash/isEqual';

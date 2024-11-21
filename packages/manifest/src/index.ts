@@ -26,6 +26,7 @@ export const initState: DataInitializer = (): ElementData => ({
     [premises[0].key]: responses[0].key,
     [premises[1].key]: responses[1].key,
   },
+  hint: '',
 });
 
 // Can be loaded from package.json
@@ -44,6 +45,7 @@ const manifest: ElementManifest = {
   type,
   version: '1.0',
   name,
+  isQuestion: true,
   ssr: false,
   initState,
   ui,
