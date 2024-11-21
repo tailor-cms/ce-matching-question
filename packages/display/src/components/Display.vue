@@ -1,6 +1,31 @@
 <template>
   <VForm ref="form" class="tce-root" @submit.prevent="submit">
-    <div class="px-2 my-4">{{ data.question }}</div>
+    <!-- eslint-disable-next-line vue/no-v-html -->
+    <div class="rich-text px-2 my-4" v-html="data.question"></div>
+    <div v-if="data.hint" class="d-flex justify-end mb-4">
+      <VTooltip
+        v-model="showHint"
+        :open-on-hover="false"
+        location="bottom"
+        max-width="350"
+        close-on-back
+        open-on-click
+      >
+        <template #activator="{ isActive, props: tooltipProps }">
+          <VBtn
+            v-click-outside="() => (showHint = false)"
+            v-bind="tooltipProps"
+            :active="isActive"
+            :prepend-icon="`mdi-lightbulb-${isActive ? 'on' : 'outline'}`"
+            size="small"
+            text="Hint"
+            variant="text"
+            rounded
+          />
+        </template>
+        {{ data.hint }}
+      </VTooltip>
+    </div>
     <div v-for="premise in data.premises" :key="premise.key" class="px-2 my-2">
       <div class="mb-2">
         <span class="font-weight-bold">{{ data.headings.premise }}:</span>
@@ -45,8 +70,9 @@ const initializeAnswer = () => cloneDeep(props.userState?.response) ?? {};
 const props = defineProps<{ id: number; data: ElementData; userState: any }>();
 const emit = defineEmits(['interaction']);
 
+const showHint = ref(false);
 const form = ref<HTMLFormElement>();
-const submitted = ref('isCorrect' in (props.userState ?? {}));
+const submitted = ref(false);
 const selectedAnswer = ref(initializeAnswer());
 
 const requiredRule = (val: string | boolean | number) => {
@@ -55,7 +81,10 @@ const requiredRule = (val: string | boolean | number) => {
 
 const submit = async () => {
   const { valid } = await form.value?.validate();
-  if (valid) emit('interaction', { response: selectedAnswer.value });
+  if (valid) {
+    submitted.value = true;
+    emit('interaction', { response: selectedAnswer.value });
+  }
 };
 
 const iconProps = (uuid: string) => {
