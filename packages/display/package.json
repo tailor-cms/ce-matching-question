@@ -1,5 +1,7 @@
 {
   "name": "@tailor-cms/ce-matching-question-display",
+  "description": "Tailor CMS matching question end-user component",
+  "author": "Studion <info@gostudion.com> (https://github.com/tailor-cms)",
   "type": "module",
   "version": "0.0.3",
   "exports": {
@@ -33,8 +35,6 @@
   "dependencies": {
     "lodash": "^4.17.21"
   },
-  "description": "Tailor CMS matching question element",
-  "author": "Studion <info@gostudion.com> (https://github.com/tailor-cms)",
   "publishConfig": {
     "access": "public"
   }

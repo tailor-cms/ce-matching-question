@@ -1,7 +1,6 @@
 import type { HookServices, ServerRuntime } from '@tailor-cms/cek-common';
 import {
   initState,
-  mocks,
   type,
 } from '@tailor-cms/ce-matching-question-manifest';
 import type { Element } from '@tailor-cms/ce-matching-question-manifest';
@@ -15,12 +14,10 @@ const USER_STATE: any = {};
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export function beforeSave(element: Element, services: HookServices) {
-  console.log('Before save hook');
   return element;
 }
 
 export function afterSave(element: Element, services: HookServices) {
-  console.log('After save hook');
   return element;
 }
 
@@ -29,7 +26,6 @@ export function afterLoaded(
   services: HookServices,
   runtime: ServerRuntime,
 ) {
-  console.log('After loaded hook');
   if (runtime === 'delivery') {
     const data = omit(element.data, ['correct']);
     return Object.assign(element, { data });
@@ -42,14 +38,11 @@ export function afterRetrieve(
   services: HookServices,
   runtime: ServerRuntime,
 ) {
-  console.log('After retrieve hook');
   return element;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function beforeDisplay(element: Element, context: any) {
-  console.log('beforeDisplay hook');
-  console.log('beforeDisplay context', context);
   return { ...context, ...USER_STATE, correct: element.data.correct };
 }
 
@@ -59,7 +52,6 @@ export function onUserInteraction(
   context: any,
   payload: any,
 ): any {
-  console.log('onUserInteraction', context, payload);
   const isCorrect = every(element.data.correct, (it, id) => {
     return it === payload.response[id];
   });
@@ -94,7 +86,6 @@ export default {
   afterRetrieve,
   onUserInteraction,
   beforeDisplay,
-  mocks,
 };
 
-export { type, initState, mocks };
+export { type, initState };
