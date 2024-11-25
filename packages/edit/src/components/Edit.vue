@@ -5,6 +5,7 @@
     validate-on="submit"
     @submit.prevent="save"
   >
+    <div class="text-subtitle-2 mb-2">Question</div>
     <RichTextEditor
       v-model="elementData.question"
       :readonly="isDisabled"
@@ -68,10 +69,10 @@
           <VBtn
             v-if="!isDisabled && pairsCount > PAIRS_LIMIT.MIN"
             aria-label="Remove answer"
-            class="my-4"
+            class="my-2"
+            color="primary-darken-4"
             density="comfortable"
             icon="mdi-close"
-            size="small"
             variant="text"
             @click="removeItem(premiseKey, responseKey)"
           />
@@ -81,8 +82,8 @@
     <div class="d-flex justify-center mb-12">
       <VBtn
         v-if="!isDisabled && pairsCount < PAIRS_LIMIT.MAX"
-        color="primary-darken-4"
         class="mt-4"
+        color="primary-darken-4"
         prepend-icon="mdi-plus"
         variant="text"
         rounded
@@ -91,6 +92,7 @@
         Add Pair
       </VBtn>
     </div>
+    <div class="text-subtitle-2 mb-2">Hint</div>
     <VTextField
       v-model="elementData.hint"
       :clearable="!isDisabled"
@@ -126,11 +128,11 @@ import {
   Element,
   ElementData,
 } from '@tailor-cms/ce-matching-question-manifest';
-import { RichTextEditor } from '@tailor-cms/core-components';
 import cloneDeep from 'lodash/cloneDeep';
 import find from 'lodash/find';
 import isEqual from 'lodash/isEqual';
 import pull from 'lodash/pull';
+import { RichTextEditor } from '@tailor-cms/core-components';
 import shuffle from 'lodash/shuffle';
 import size from 'lodash/size';
 import { v4 as uuid } from 'uuid';

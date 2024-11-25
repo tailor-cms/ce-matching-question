@@ -1,8 +1,5 @@
 import type { HookServices, ServerRuntime } from '@tailor-cms/cek-common';
-import {
-  initState,
-  type,
-} from '@tailor-cms/ce-matching-question-manifest';
+import { initState, type } from '@tailor-cms/ce-matching-question-manifest';
 import type { Element } from '@tailor-cms/ce-matching-question-manifest';
 import every from 'lodash/every.js';
 import omit from 'lodash/omit.js';
@@ -43,7 +40,8 @@ export function afterRetrieve(
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function beforeDisplay(element: Element, context: any) {
-  return { ...context, ...USER_STATE, correct: element.data.correct };
+  if (IS_CEK) USER_STATE.correct = element.data.correct;
+  return { ...context, ...USER_STATE };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
