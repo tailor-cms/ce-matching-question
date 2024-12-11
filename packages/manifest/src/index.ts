@@ -18,7 +18,8 @@ export const name = 'Matching question';
 // Function which inits element state (data property on the Content Element
 // entity)
 export const initState: DataInitializer = (): ElementData => ({
-  question: '',
+  embeds: {},
+  question: [],
   headings: { premise: 'Premise', response: 'Response' },
   premises,
   responses,
@@ -45,6 +46,7 @@ const manifest: ElementManifest = {
   type,
   version: '1.0',
   name,
+  isComposite: true,
   isQuestion: true,
   ssr: false,
   initState,

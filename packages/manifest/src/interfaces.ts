@@ -4,7 +4,8 @@ interface DataInput {
 }
 
 export interface ElementData {
-  question: string;
+  embeds: Record<string, any>;
+  question: string[];
   headings: Record<string, string>;
   premises: DataInput[];
   responses: DataInput[];
@@ -38,6 +39,7 @@ export interface ElementManifest {
   version: string;
   name: string;
   ssr: boolean;
+  isComposite: boolean;
   isQuestion: boolean;
   initState: DataInitializer;
   Edit?: object;
