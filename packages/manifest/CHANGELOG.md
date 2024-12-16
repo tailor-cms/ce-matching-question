@@ -1,5 +1,11 @@
 # @tailor-cms/ce-matching-question-manifest
 
+## 0.0.6
+
+### Patch Changes
+
+- Bumped tce-display-runtime.
+
 ## 0.0.5
 
 ### Patch Changes
