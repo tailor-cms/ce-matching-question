@@ -13,8 +13,8 @@
     @save="save"
     @update="updateData($event)"
   >
-    <div class="text-subtitle-2 mb-2">Answers</div>
-    <VRow>
+    <div class="text-subtitle-2">Answers</div>
+    <VRow class="mt-2">
       <VCol cols="4" offset="1">
         <VTextField
           :model-value="elementData.headings.premise"
@@ -68,7 +68,7 @@
           <VBtn
             v-if="!isDisabled && pairsCount > PAIRS_LIMIT.MIN"
             aria-label="Remove answer"
-            class="my-2"
+            class="my-3"
             color="primary-darken-4"
             size="x-small"
             variant="text"
