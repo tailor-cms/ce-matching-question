@@ -21,8 +21,8 @@ importers:
         specifier: 0.6.27
         version: 0.6.27(@babel/parser@7.26.3)(@types/node@20.11.19)(rollup@4.12.0)
       '@tailor-cms/tce-display-runtime':
-        specifier: 0.6.6
-        version: 0.6.6(@babel/parser@7.26.3)(@types/node@20.11.19)(rollup@4.12.0)
+        specifier: 0.6.7
+        version: 0.6.7(@babel/parser@7.26.3)(@types/node@20.11.19)(rollup@4.12.0)
       '@types/node':
         specifier: ^20.5.7
         version: 20.11.19
@@ -783,9 +783,6 @@ packages:
 
   '@tailor-cms/tce-boot@0.6.27':
     resolution: {integrity: sha512-ZK/Pw3/1zMMO0T0CjtPePux+2WKB2Sh1FWQpilSR6wrS2yz+S6VMcl/JGy/o1n1DalQ5tZ3iX4qiTaAJcr1l1A==}
-
-  '@tailor-cms/tce-display-runtime@0.6.6':
-    resolution: {integrity: sha512-7BsxY8C4GXISwcJmRM8HT92KEc6Sorv+nn6pOTYj+qr2GNs6WO46VKhMroMzdpT7Own7z26/+pml6LfMm7YdtQ==}
 
   '@tailor-cms/tce-display-runtime@0.6.7':
     resolution: {integrity: sha512-L9Z08YJ5NHZ3H04UhWph8lOMjPSikLBvP31CfY9JVwT/dAGc9soHdiItU1xnmkJQ7jLjnLsO1yb+ksu6JZ4A2g==}
@@ -4678,47 +4675,14 @@ snapshots:
       - vue-i18n
       - webpack-plugin-vuetify
 
-  '@tailor-cms/tce-display-runtime@0.6.6(@babel/parser@7.26.3)(@types/node@20.11.19)(rollup@4.12.0)':
-    dependencies:
-      '@mdi/font': 7.2.96
-      '@vitejs/plugin-vue': 4.3.4(vite@4.4.9(@types/node@20.11.19)(sass@1.68.0))(vue@3.3.4)
-      '@vue/reactivity': 3.4.19
-      '@vue/runtime-core': 3.4.19
-      '@vue/runtime-dom': 3.4.19
-      '@vue/shared': 3.4.19
-      dotenv: 16.4.5
-      ky: 1.0.1
-      lodash: 4.17.21
-      sass: 1.68.0
-      typescript: 5.2.2
-      unplugin-vue-components: 0.25.2(@babel/parser@7.26.3)(rollup@4.12.0)(vue@3.3.4)
-      vite: 4.4.9(@types/node@20.11.19)(sass@1.68.0)
-      vite-plugin-vuetify: 1.0.2(vite@4.4.9(@types/node@20.11.19)(sass@1.68.0))(vue@3.3.4)(vuetify@3.7.3)
-      vue: 3.3.4
-      vue-tsc: 1.8.13(typescript@5.2.2)
-      vuetify: 3.7.3(typescript@5.2.2)(vite-plugin-vuetify@1.0.2)(vue@3.3.4)
-      webfontloader: 1.6.28
-    transitivePeerDependencies:
-      - '@babel/parser'
-      - '@nuxt/kit'
-      - '@types/node'
-      - less
-      - lightningcss
-      - rollup
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-      - webpack-plugin-vuetify
-
   '@tailor-cms/tce-display-runtime@0.6.7(@babel/parser@7.26.3)(@types/node@20.11.19)(rollup@4.12.0)':
     dependencies:
       '@mdi/font': 7.2.96
       '@vitejs/plugin-vue': 4.3.4(vite@4.4.9(@types/node@20.11.19)(sass@1.68.0))(vue@3.3.4)
-      '@vue/reactivity': 3.4.19
-      '@vue/runtime-core': 3.4.19
-      '@vue/runtime-dom': 3.4.19
-      '@vue/shared': 3.4.19
+      '@vue/reactivity': 3.5.13
+      '@vue/runtime-core': 3.5.13
+      '@vue/runtime-dom': 3.5.13
+      '@vue/shared': 3.5.13
       dotenv: 16.4.5
       ky: 1.0.1
       lodash: 4.17.21
@@ -5336,9 +5300,9 @@ snapshots:
     dependencies:
       '@volar/language-core': 1.10.10
       '@volar/source-map': 1.10.10
-      '@vue/compiler-dom': 3.4.19
-      '@vue/reactivity': 3.4.19
-      '@vue/shared': 3.4.19
+      '@vue/compiler-dom': 3.5.13
+      '@vue/reactivity': 3.5.13
+      '@vue/shared': 3.5.13
       minimatch: 9.0.3
       muggle-string: 0.3.1
       vue-template-compiler: 2.7.16
@@ -7715,7 +7679,7 @@ snapshots:
     dependencies:
       chokidar: 3.6.0
       immutable: 4.3.5
-      source-map-js: 1.0.2
+      source-map-js: 1.2.1
 
   semver@6.3.1: {}
 
@@ -8223,7 +8187,7 @@ snapshots:
       debug: 4.3.4
       fast-glob: 3.3.2
       local-pkg: 0.4.3
-      magic-string: 0.30.7
+      magic-string: 0.30.17
       minimatch: 9.0.3
       resolve: 1.22.8
       unplugin: 1.7.1
@@ -8242,7 +8206,7 @@ snapshots:
       debug: 4.3.4
       fast-glob: 3.3.2
       local-pkg: 0.4.3
-      magic-string: 0.30.7
+      magic-string: 0.30.17
       minimatch: 9.0.3
       resolve: 1.22.8
       unplugin: 1.7.1
@@ -8312,7 +8276,7 @@ snapshots:
       upath: 2.0.1
       vite: 4.4.9(@types/node@20.11.19)(sass@1.68.0)
       vue: 3.3.4
-      vuetify: 3.7.3(typescript@5.2.2)(vite-plugin-vuetify@1.0.2)(vue@3.3.4)
+      vuetify: 3.7.3(typescript@5.3.3)(vite-plugin-vuetify@1.0.2)(vue@3.3.4)
     transitivePeerDependencies:
       - supports-color
 
@@ -8331,7 +8295,7 @@ snapshots:
   vite@4.4.9(@types/node@20.11.19)(sass@1.32.13):
     dependencies:
       esbuild: 0.18.20
-      postcss: 8.4.35
+      postcss: 8.4.49
       rollup: 3.29.4
     optionalDependencies:
       '@types/node': 20.11.19
@@ -8341,7 +8305,7 @@ snapshots:
   vite@4.4.9(@types/node@20.11.19)(sass@1.68.0):
     dependencies:
       esbuild: 0.18.20
-      postcss: 8.4.35
+      postcss: 8.4.49
       rollup: 3.29.4
     optionalDependencies:
       '@types/node': 20.11.19
