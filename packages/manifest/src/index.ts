@@ -18,7 +18,8 @@ export const name = 'Matching question';
 // Function which inits element state (data property on the Content Element
 // entity)
 export const initState: DataInitializer = (): ElementData => ({
-  question: '',
+  embeds: {},
+  question: [],
   headings: { premise: 'Premise', response: 'Response' },
   premises,
   responses,
@@ -26,6 +27,7 @@ export const initState: DataInitializer = (): ElementData => ({
     [premises[0].key]: responses[0].key,
     [premises[1].key]: responses[1].key,
   },
+  hint: '',
 });
 
 // Can be loaded from package.json
@@ -40,18 +42,16 @@ const ui = {
   forceFullWidth: true,
 };
 
-export const mocks = {
-  displayContexts: [{ name: 'No selection', data: {} }],
-};
-
 const manifest: ElementManifest = {
   type,
   version: '1.0',
   name,
+  isComposite: true,
+  isQuestion: true,
+  isGradable: true,
   ssr: false,
   initState,
   ui,
-  mocks,
 };
 
 export default manifest;

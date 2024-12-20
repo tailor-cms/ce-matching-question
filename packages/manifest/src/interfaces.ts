@@ -4,11 +4,14 @@ interface DataInput {
 }
 
 export interface ElementData {
-  question: string;
+  isGradable?: boolean;
+  embeds: Record<string, any>;
+  question: string[];
   headings: Record<string, string>;
   premises: DataInput[];
   responses: DataInput[];
   correct: Record<string, string>;
+  hint: string;
 }
 
 export interface Element {
@@ -37,6 +40,9 @@ export interface ElementManifest {
   version: string;
   name: string;
   ssr: boolean;
+  isComposite: boolean;
+  isQuestion: boolean;
+  isGradable?: boolean;
   initState: DataInitializer;
   Edit?: object;
   TopToolbar?: object;

@@ -1,27 +1,27 @@
 <template>
-  <VForm
-    ref="form"
-    class="tce-container"
-    validate-on="submit"
-    @submit.prevent="save"
+  <QuestionContainer
+    v-bind="{
+      type: manifest.name,
+      icon: manifest.ui.icon,
+      embedTypes,
+      elementData,
+      isDirty,
+      isDisabled,
+    }"
+    :show-feedback="false"
+    @cancel="updateData(element.data)"
+    @save="save"
+    @update="updateData($event)"
   >
-    <VTextarea
-      v-model="elementData.question"
-      :readonly="isDisabled"
-      :rules="[requiredRule]"
-      class="my-3"
-      label="Question"
-      rows="3"
-      auto-grow
-    />
-    <div class="text-subtitle-2 mb-2">Answers</div>
-    <VRow>
+    <div class="text-subtitle-2">Answers</div>
+    <VRow class="mt-2">
       <VCol cols="4" offset="1">
         <VTextField
           :model-value="elementData.headings.premise"
           :readonly="isDisabled"
-          :rules="[requiredRule]"
+          :rules="[(val: string) => !!val || 'Premise heading is required']"
           label="Premise heading"
+          variant="outlined"
           @update:model-value="updateHeading('premise', $event)"
         />
       </VCol>
@@ -29,8 +29,9 @@
         <VTextField
           :model-value="elementData.headings.response"
           :readonly="isDisabled"
-          :rules="[requiredRule]"
+          :rules="[(val: string) => !!val || 'Response heading is required']"
           label="Response heading"
+          variant="outlined"
           @update:model-value="updateHeading('response', $event)"
         />
       </VCol>
@@ -44,20 +45,22 @@
           <VTextField
             :model-value="getPremiseContent(premiseKey)"
             :readonly="isDisabled"
-            :rules="[requiredRule]"
+            :rules="[(val: string) => !!val || 'Premise is required']"
             placeholder="Premise value..."
+            variant="outlined"
             @update:model-value="updatePremiseContent(premiseKey, $event)"
           />
         </VCol>
         <VCol class="text-center" cols="2">
-          <VIcon class="my-4" icon="mdi-arrow-right" size="small" />
+          <VIcon class="my-5" icon="mdi-arrow-right" size="x-small" />
         </VCol>
         <VCol cols="4">
           <VTextField
             :model-value="getResponseContent(responseKey)"
             :readonly="isDisabled"
-            :rules="[requiredRule]"
+            :rules="[(val: string) => !!val || 'Response is required']"
             placeholder="Response value..."
+            variant="outlined"
             @update:model-value="updateResponseContent(responseKey, $event)"
           />
         </VCol>
@@ -65,20 +68,23 @@
           <VBtn
             v-if="!isDisabled && pairsCount > PAIRS_LIMIT.MIN"
             aria-label="Remove answer"
-            class="my-4"
-            density="comfortable"
-            icon="mdi-close"
-            size="small"
+            class="my-3"
+            color="primary-darken-4"
+            size="x-small"
             variant="text"
+            icon
             @click="removeItem(premiseKey, responseKey)"
-          />
+          >
+            <VIcon icon="mdi-close" size="large" />
+          </VBtn>
         </VCol>
       </VRow>
     </VSlideYTransition>
-    <div class="d-flex justify-center align-center mb-2">
+    <div class="d-flex justify-center mb-4">
       <VBtn
         v-if="!isDisabled && pairsCount < PAIRS_LIMIT.MAX"
         class="mt-4"
+        color="primary-darken-4"
         prepend-icon="mdi-plus"
         variant="text"
         rounded
@@ -87,18 +93,12 @@
         Add Pair
       </VBtn>
     </div>
-    <div v-if="!isDisabled" class="d-flex justify-end">
-      <VBtn :disabled="isDirty" variant="text" @click="cancel">Cancel</VBtn>
-      <VBtn :disabled="isDirty" class="ml-2" type="submit" variant="tonal">
-        Save
-      </VBtn>
-    </div>
-  </VForm>
+  </QuestionContainer>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineEmits, defineProps, reactive, ref, watch } from 'vue';
-import {
+import { computed, defineEmits, defineProps, reactive, watch } from 'vue';
+import manifest, {
   Element,
   ElementData,
 } from '@tailor-cms/ce-matching-question-manifest';
@@ -106,6 +106,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import find from 'lodash/find';
 import isEqual from 'lodash/isEqual';
 import pull from 'lodash/pull';
+import { QuestionContainer } from '@tailor-cms/core-components';
 import shuffle from 'lodash/shuffle';
 import size from 'lodash/size';
 import { v4 as uuid } from 'uuid';
@@ -117,15 +118,15 @@ const PAIRS_LIMIT = Object.freeze({
 
 const emit = defineEmits(['save']);
 const props = defineProps<{
+  embedTypes: any[];
   element: Element;
   isFocused: boolean;
   isDisabled: boolean;
 }>();
 
-const form = ref<HTMLFormElement>();
 const elementData = reactive<ElementData>(cloneDeep(props.element.data));
 
-const isDirty = computed(() => isEqual(elementData, props.element.data));
+const isDirty = computed(() => !isEqual(elementData, props.element.data));
 const pairsCount = computed(() => size(elementData.correct));
 
 const getPremiseContent = (key: string) => getPremiseItem(key)?.value;
@@ -165,24 +166,13 @@ const removeItem = (premiseKey: string, responseKey: string) => {
   delete elementData.correct[premiseKey];
 };
 
-const save = async () => {
-  const { valid } = await form.value?.validate();
-  if (valid) emit('save', elementData);
+const save = () => emit('save', elementData);
+
+const updateData = (data: ElementData) => {
+  Object.assign(elementData, cloneDeep(data));
 };
 
-const cancel = () => {
-  Object.assign(elementData, cloneDeep(props.element.data));
-  form.value?.resetValidation();
-};
-
-const requiredRule = (val: string | boolean | number) => {
-  return !!val || 'The field is required';
-};
-
-watch(
-  () => props.element.data,
-  (data) => Object.assign(elementData, cloneDeep(data)),
-);
+watch(() => props.element.data, updateData);
 </script>
 
 <style lang="scss" scoped>

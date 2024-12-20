@@ -1,9 +1,9 @@
 {
   "name": "@tailor-cms/ce-matching-question-manifest",
-  "description": "Tailor CMS matching question element",
+  "description": "Tailor CMS matching question manifest",
   "author": "Studion <info@gostudion.com> (https://github.com/tailor-cms)",
   "type": "module",
-  "version": "0.0.3",
+  "version": "0.0.6",
   "exports": {
     ".": {
       "import": "./dist/index.js",
