@@ -10,7 +10,7 @@ const premises = Array.from({ length: 2 }, () => ({ key: uuid(), value: '' }));
 const responses = Array.from({ length: 2 }, () => ({ key: uuid(), value: '' }));
 
 // Element unique id within the target system (e.g. Tailor)
-export const type = 'CE_MATCHING_QUESTION';
+export const type = 'MATCHING_QUESTION';
 
 // Display name (e.g. shown to the author)
 export const name = 'Matching question';

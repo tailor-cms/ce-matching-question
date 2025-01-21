@@ -3,8 +3,8 @@
     v-bind="{
       type: manifest.name,
       icon: manifest.ui.icon,
-      embedTypes,
       elementData,
+      embedElementConfig,
       isDirty,
       isDisabled,
     }"
@@ -118,8 +118,8 @@ const PAIRS_LIMIT = Object.freeze({
 
 const emit = defineEmits(['save']);
 const props = defineProps<{
-  embedTypes: any[];
   element: Element;
+  embedElementConfig: any[];
   isFocused: boolean;
   isDisabled: boolean;
 }>();
