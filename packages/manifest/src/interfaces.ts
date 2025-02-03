@@ -6,7 +6,6 @@ export interface DataInput {
 export interface ElementData {
   isGradable?: boolean;
   embeds: Record<string, any>;
-  question: string[];
   headings: Record<string, string>;
   premises: DataInput[];
   responses: DataInput[];
