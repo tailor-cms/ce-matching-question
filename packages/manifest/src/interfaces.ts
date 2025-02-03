@@ -1,4 +1,4 @@
-interface DataInput {
+export interface DataInput {
   key: string;
   value: string;
 }

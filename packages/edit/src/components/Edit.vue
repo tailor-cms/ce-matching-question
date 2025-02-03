@@ -1,17 +1,8 @@
 <template>
   <QuestionContainer
-    v-bind="{
-      type: manifest.name,
-      icon: manifest.ui.icon,
-      elementData,
-      embedElementConfig,
-      isDirty,
-      isDisabled,
-    }"
+    v-bind="{ elementData, embedElementConfig, isDisabled }"
     :show-feedback="false"
-    @cancel="updateData(element.data)"
-    @save="save"
-    @update="updateData($event)"
+    @update="emit('update', $event)"
   >
     <div class="text-subtitle-2">Answers</div>
     <VRow class="mt-2">
@@ -97,16 +88,14 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineEmits, defineProps, reactive, watch } from 'vue';
-import manifest, {
-  Element,
-  ElementData,
-} from '@tailor-cms/ce-matching-question-manifest';
+import { computed, defineEmits, defineProps } from 'vue';
 import cloneDeep from 'lodash/cloneDeep';
+import { Element } from '@tailor-cms/ce-matching-question-manifest';
 import find from 'lodash/find';
-import isEqual from 'lodash/isEqual';
-import pull from 'lodash/pull';
+import findIndex from 'lodash/findIndex';
 import { QuestionContainer } from '@tailor-cms/core-components';
+import remove from 'lodash/remove';
+import set from 'lodash/set';
 import shuffle from 'lodash/shuffle';
 import size from 'lodash/size';
 import { v4 as uuid } from 'uuid';
@@ -116,63 +105,66 @@ const PAIRS_LIMIT = Object.freeze({
   MAX: 10,
 });
 
-const emit = defineEmits(['save']);
 const props = defineProps<{
   element: Element;
   embedElementConfig: any[];
   isFocused: boolean;
   isDisabled: boolean;
 }>();
+const emit = defineEmits(['save', 'update']);
 
-const elementData = reactive<ElementData>(cloneDeep(props.element.data));
-
-const isDirty = computed(() => !isEqual(elementData, props.element.data));
-const pairsCount = computed(() => size(elementData.correct));
+const elementData = computed(() => props.element.data);
+const pairsCount = computed(() => size(elementData.value.correct));
+const headings = computed(() => elementData.value.headings);
 
 const getPremiseContent = (key: string) => getPremiseItem(key)?.value;
 const getResponseContent = (key: string) => getResponseItem(key)?.value;
-const getPremiseItem = (key: string) => find(elementData.premises, { key });
-const getResponseItem = (key: string) => find(elementData.responses, { key });
+
+const getPremiseItem = (key: string) =>
+  find(elementData.value.premises, { key });
+
+const getResponseItem = (key: string) =>
+  find(elementData.value.responses, { key });
 
 const updateHeading = (key: string, value: string) => {
-  elementData.headings[key] = value;
+  emit('update', { headings: set({ ...headings.value }, key, value) });
 };
 
 const updatePremiseContent = (key: string, value: string) => {
-  const premise = getPremiseItem(key);
-  if (premise) premise.value = value;
-  elementData.premises = shuffle(elementData.premises);
+  const premises = cloneDeep(elementData.value.premises);
+  const index = findIndex(premises, { key });
+  if (index >= 0) premises[index].value = value;
+  emit('update', { premises: shuffle(premises) });
 };
 
 const updateResponseContent = (key: string, value: string) => {
-  const response = getResponseItem(key);
-  if (response) response.value = value;
-  elementData.responses = shuffle(elementData.responses);
+  const responses = cloneDeep(elementData.value.responses);
+  const index = findIndex(responses, { key });
+  if (index >= 0) responses[index].value = value;
+  emit('update', { responses: shuffle(responses) });
 };
 
 const addItem = () => {
+  const { premises, responses, correct } = cloneDeep(elementData.value);
   const premiseKey = uuid();
   const responseKey = uuid();
-  elementData.premises.push({ key: premiseKey, value: '' });
-  elementData.responses.push({ key: responseKey, value: '' });
-  elementData.correct[premiseKey] = responseKey;
-  elementData.premises = shuffle(elementData.premises);
-  elementData.responses = shuffle(elementData.responses);
+  premises.push({ key: premiseKey, value: '' });
+  responses.push({ key: responseKey, value: '' });
+  correct[premiseKey] = responseKey;
+  emit('update', {
+    premises: shuffle(premises),
+    responses: shuffle(responses),
+    correct,
+  });
 };
 
 const removeItem = (premiseKey: string, responseKey: string) => {
-  pull(elementData.premises, getPremiseItem(premiseKey));
-  pull(elementData.responses, getResponseItem(responseKey));
-  delete elementData.correct[premiseKey];
+  const { premises, responses, correct } = cloneDeep(elementData.value);
+  remove(premises, { key: premiseKey });
+  remove(responses, { key: responseKey });
+  delete correct[premiseKey];
+  emit('update', { premises, responses, correct });
 };
-
-const save = () => emit('save', elementData);
-
-const updateData = (data: ElementData) => {
-  Object.assign(elementData, cloneDeep(data));
-};
-
-watch(() => props.element.data, updateData);
 </script>
 
 <style lang="scss" scoped>
