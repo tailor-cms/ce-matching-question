@@ -1,4 +1,4 @@
-interface DataInput {
+export interface DataInput {
   key: string;
   value: string;
 }
@@ -6,7 +6,6 @@ interface DataInput {
 export interface ElementData {
   isGradable?: boolean;
   embeds: Record<string, any>;
-  question: string[];
   headings: Record<string, string>;
   premises: DataInput[];
   responses: DataInput[];

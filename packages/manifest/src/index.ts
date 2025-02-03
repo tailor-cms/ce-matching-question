@@ -19,7 +19,6 @@ export const name = 'Matching question';
 // entity)
 export const initState: DataInitializer = (): ElementData => ({
   embeds: {},
-  question: [],
   headings: { premise: 'Premise', response: 'Response' },
   premises,
   responses,
