@@ -1,5 +1,11 @@
 # @tailor-cms/ce-matching-question-display
 
+## 0.0.9
+
+### Patch Changes
+
+- Bumped core and lx components packages, removed redundant question prop in data.
+
 ## 0.0.8
 
 ### Patch Changes
