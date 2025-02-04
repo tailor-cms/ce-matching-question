@@ -1,5 +1,11 @@
 # @tailor-cms/ce-matching-question-server
 
+## 0.0.12
+
+### Patch Changes
+
+- Revert to old structutre with question prop.
+
 ## 0.0.11
 
 ### Patch Changes
