@@ -1,5 +1,11 @@
 # @tailor-cms/ce-matching-question-display
 
+## 0.0.10
+
+### Patch Changes
+
+- Bumped core-components package.
+
 ## 0.0.9
 
 ### Patch Changes
