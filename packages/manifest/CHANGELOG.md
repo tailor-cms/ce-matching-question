@@ -1,5 +1,11 @@
 # @tailor-cms/ce-matching-question-manifest
 
+## 0.0.11
+
+### Patch Changes
+
+- Updated package icon.
+
 ## 0.0.10
 
 ### Patch Changes
