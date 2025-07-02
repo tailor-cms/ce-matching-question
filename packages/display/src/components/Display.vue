@@ -1,6 +1,6 @@
 <template>
   <QuestionContainer
-    :data="data"
+    :data="element.data"
     :is-correct="userState.isCorrect"
     :is-submitted="isSubmitted"
     allowed-retake
@@ -10,17 +10,19 @@
   >
     <div class="text-subtitle-2 mb-2">Select correct answer for each:</div>
     <div
-      v-for="premise in data.premises"
+      v-for="premise in element.data.premises"
       :key="premise.key"
       class="text-subtitle-2 mt-2"
     >
       <div class="mb-2">
-        <span class="font-weight-bold">{{ data.headings.premise }}:</span>
+        <span class="font-weight-bold">
+          {{ element.data.headings.premise }}:
+        </span>
         {{ premise.value }}
       </div>
       <VSelect
-        :items="data.responses"
-        :label="data.headings.response"
+        :items="element.data.responses"
+        :label="element.data.headings.response"
         :readonly="isSubmitted"
         :rules="[requiredRule]"
         item-title="value"
@@ -38,13 +40,13 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import cloneDeep from 'lodash/cloneDeep';
-import { ElementData } from '@tailor-cms/ce-matching-question-manifest';
+import { cloneDeep } from 'lodash-es';
+import { Element } from '@tailor-cms/ce-matching-question-manifest';
 import { QuestionContainer } from '@tailor-cms/lx-components';
 
 const initializeAnswer = () => cloneDeep(props.userState?.response) ?? {};
 
-const props = defineProps<{ id: number; data: ElementData; userState: any }>();
+const props = defineProps<{ element: Element; userState: any }>();
 const emit = defineEmits(['interaction']);
 
 const isSubmitted = ref(!!props.userState.isSubmitted);
@@ -72,10 +74,3 @@ watch(
   { deep: true },
 );
 </script>
-
-<style scoped>
-.tce-root {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 1rem;
-}
-</style>
