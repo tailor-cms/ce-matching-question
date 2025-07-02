@@ -13,7 +13,7 @@ const responses = Array.from({ length: 2 }, () => ({ key: uuid(), value: '' }));
 export const type = 'MATCHING_QUESTION';
 
 // Display name (e.g. shown to the author)
-export const name = 'Matching question';
+export const name = 'Matching Question';
 
 // Function which inits element state (data property on the Content Element
 // entity)
