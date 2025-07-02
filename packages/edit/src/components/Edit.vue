@@ -1,6 +1,6 @@
 <template>
   <QuestionContainer
-    v-bind="{ elementData, embedElementConfig, isDisabled }"
+    v-bind="{ elementData, embedElementConfig, isReadonly }"
     :show-feedback="false"
     @update="emit('update', $event)"
   >
@@ -9,7 +9,7 @@
       <VCol cols="4" offset="1">
         <VTextField
           :model-value="elementData.headings.premise"
-          :readonly="isDisabled"
+          :readonly="isReadonly"
           :rules="[(val: string) => !!val || 'Premise heading is required']"
           label="Premise heading"
           variant="outlined"
@@ -19,7 +19,7 @@
       <VCol cols="4" offset="2">
         <VTextField
           :model-value="elementData.headings.response"
-          :readonly="isDisabled"
+          :readonly="isReadonly"
           :rules="[(val: string) => !!val || 'Response heading is required']"
           label="Response heading"
           variant="outlined"
@@ -35,7 +35,7 @@
         <VCol cols="4" offset="1">
           <VTextField
             :model-value="getPremiseContent(premiseKey)"
-            :readonly="isDisabled"
+            :readonly="isReadonly"
             :rules="[(val: string) => !!val || 'Premise is required']"
             placeholder="Premise value..."
             variant="outlined"
@@ -48,7 +48,7 @@
         <VCol cols="4">
           <VTextField
             :model-value="getResponseContent(responseKey)"
-            :readonly="isDisabled"
+            :readonly="isReadonly"
             :rules="[(val: string) => !!val || 'Response is required']"
             placeholder="Response value..."
             variant="outlined"
@@ -57,7 +57,7 @@
         </VCol>
         <VCol cols="1">
           <VBtn
-            v-if="!isDisabled && pairsCount > PAIRS_LIMIT.MIN"
+            v-if="!isReadonly && pairsCount > PAIRS_LIMIT.MIN"
             aria-label="Remove answer"
             class="my-3"
             color="primary-darken-4"
@@ -73,7 +73,7 @@
     </VSlideYTransition>
     <div class="d-flex justify-center mb-4">
       <VBtn
-        v-if="!isDisabled && pairsCount < PAIRS_LIMIT.MAX"
+        v-if="!isReadonly && pairsCount < PAIRS_LIMIT.MAX"
         class="mt-4"
         color="primary-darken-4"
         prepend-icon="mdi-plus"
@@ -88,16 +88,18 @@
 </template>
 
 <script lang="ts" setup>
+import {
+  cloneDeep,
+  find,
+  findIndex,
+  remove,
+  set,
+  shuffle,
+  size,
+} from 'lodash-es';
 import { computed, defineEmits, defineProps } from 'vue';
-import cloneDeep from 'lodash/cloneDeep';
 import { Element } from '@tailor-cms/ce-matching-question-manifest';
-import find from 'lodash/find';
-import findIndex from 'lodash/findIndex';
 import { QuestionContainer } from '@tailor-cms/core-components';
-import remove from 'lodash/remove';
-import set from 'lodash/set';
-import shuffle from 'lodash/shuffle';
-import size from 'lodash/size';
 import { v4 as uuid } from 'uuid';
 
 const PAIRS_LIMIT = Object.freeze({
@@ -108,8 +110,9 @@ const PAIRS_LIMIT = Object.freeze({
 const props = defineProps<{
   element: Element;
   embedElementConfig: any[];
+  isDragged: boolean;
   isFocused: boolean;
-  isDisabled: boolean;
+  isReadonly: boolean;
 }>();
 const emit = defineEmits(['save', 'update']);
 
