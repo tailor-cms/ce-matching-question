@@ -8,11 +8,11 @@
     @retry="isSubmitted = false"
     @submit="submit"
   >
-    <div class="text-subtitle-2 mb-2">Select correct answer for each:</div>
+    <!-- <div class="text-subtitle-2 mb-2">Select correct answer for each:</div> -->
     <div
       v-for="premise in element.data.premises"
       :key="premise.key"
-      class="text-subtitle-2 mt-2"
+      class="text-subtitle-2 mt-4"
     >
       <div class="mb-2">
         <span class="font-weight-bold">
@@ -25,12 +25,14 @@
         :label="element.data.headings.response"
         :readonly="isSubmitted"
         :rules="[requiredRule]"
+        bg-color="white"
+        hide-details="auto"
         item-title="value"
         item-value="key"
         variant="outlined"
         @update:model-value="answer[premise.key] = $event"
       >
-        <template v-if="isSubmitted" #append>
+        <template v-if="isSubmitted" #append-inner>
           <VIcon v-bind="iconProps(premise.key)" />
         </template>
       </VSelect>
