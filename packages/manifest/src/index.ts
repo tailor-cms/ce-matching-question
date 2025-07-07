@@ -106,9 +106,16 @@ export const ai = {
       - 'headings' is an object with 'premise' and 'response' headings.
       - 'hint' is an optional hint for the correct solution.
   `,
-  processResponse: (data: any) => {
+  processResponse: (val: any) => {
     const questionId = uuid();
-    const pairs = data.pairs.reduce(
+    const question = {
+      id: questionId,
+      data: { content: val.question },
+      embedded: true,
+      position: 1,
+      type: 'TIPTAP_HTML',
+    };
+    const pairs = val.pairs.reduce(
       (acc: Record<string, any>, { premise, response }: any) => {
         const premiseId = uuid();
         const responseId = uuid();
@@ -121,19 +128,11 @@ export const ai = {
     );
     return {
       isGradable: true,
-      question: [questionId],
-      hint: data.hint || '',
+      hint: val.hint || '',
+      headings: val.headings,
       ...pairs,
-      headings: data.headings,
-      embeds: {
-        [questionId]: {
-          id: questionId,
-          data: { content: data.question },
-          embedded: true,
-          position: 1,
-          type: 'TIPTAP_HTML',
-        },
-      },
+      question: [questionId],
+      embeds: { [questionId]: question },
     };
   },
 };
