@@ -1,3 +1,4 @@
+import { OpenAISchema } from '@tailor-cms/cek-common';
 import { v4 as uuid } from 'uuid';
 
 import type {
@@ -42,6 +43,100 @@ const ui = {
   forceFullWidth: true,
 };
 
+export const ai = {
+  Schema: {
+    type: 'json_schema',
+    name: 'ce_matching_question',
+    schema: {
+      type: 'object',
+      properties: {
+        question: { type: 'string' },
+        pairs: {
+          type: 'array',
+          minItems: 2,
+          items: {
+            type: 'object',
+            properties: {
+              premise: { type: 'string' },
+              response: { type: 'string' },
+            },
+            required: ['premise', 'response'],
+            additionalProperties: false,
+          },
+        },
+        headings: {
+          type: 'object',
+          properties: {
+            premise: { type: 'string' },
+            response: { type: 'string' },
+          },
+          required: ['premise', 'response'],
+          additionalProperties: false,
+        },
+        hint: { type: 'string' },
+      },
+      required: ['question', 'hint', 'headings', 'pairs'],
+      additionalProperties: false,
+    },
+  } as OpenAISchema,
+  getPrompt: () => `
+    Generate a matching question as an object with the following
+    properties:
+    {
+      "question": "",
+      "pairs": [
+        {
+          "premise": "",
+          "response": "
+        },
+      ],
+      "headings":
+      {
+        "premise: "",
+        "response": "'
+      },
+      "hint": "",
+    }
+    where:
+      - 'question' is the question prompt.
+      - 'pairs' is an array of pair objects where:
+        - 'premise' is the premise text.
+        - 'response' is the response text.
+        Generate at least 2 pairs.
+      - 'headings' is an object with 'premise' and 'response' headings.
+      - 'hint' is an optional hint for the correct solution.
+  `,
+  processResponse: (val: any) => {
+    const questionId = uuid();
+    const question = {
+      id: questionId,
+      data: { content: val.question },
+      embedded: true,
+      position: 1,
+      type: 'TIPTAP_HTML',
+    };
+    const pairs = val.pairs.reduce(
+      (acc: Record<string, any>, { premise, response }: any) => {
+        const premiseId = uuid();
+        const responseId = uuid();
+        acc.premises.push({ key: premiseId, value: premise });
+        acc.responses.push({ key: responseId, value: response });
+        acc.correct[premiseId] = responseId;
+        return acc;
+      },
+      { premises: [], responses: [], correct: {} },
+    );
+    return {
+      isGradable: true,
+      hint: val.hint || '',
+      headings: val.headings,
+      ...pairs,
+      question: [questionId],
+      embeds: { [questionId]: question },
+    };
+  },
+};
+
 const manifest: ElementManifest = {
   type,
   version: '1.0',
@@ -52,6 +147,7 @@ const manifest: ElementManifest = {
   ssr: false,
   initState,
   ui,
+  ai,
 };
 
 export default manifest;
