@@ -1,4 +1,7 @@
-import { OpenAISchema } from '@tailor-cms/cek-common';
+import type {
+  AiConfig,
+  ElementMocks,
+} from '@tailor-cms/cek-common';
 import { v4 as uuid } from 'uuid';
 
 import type {
@@ -6,9 +9,6 @@ import type {
   ElementData,
   ElementManifest,
 } from './interfaces';
-
-const premises = Array.from({ length: 2 }, () => ({ key: uuid(), value: '' }));
-const responses = Array.from({ length: 2 }, () => ({ key: uuid(), value: '' }));
 
 // Element unique id within the target system (e.g. Tailor)
 export const type = 'MATCHING_QUESTION';
@@ -18,21 +18,54 @@ export const name = 'Matching Question';
 
 // Function which inits element state (data property on the Content Element
 // entity)
-export const initState: DataInitializer = (): ElementData => ({
-  embeds: {},
-  question: [],
-  headings: { premise: 'Premise', response: 'Response' },
-  premises,
-  responses,
-  correct: {
-    [premises[0].key]: responses[0].key,
-    [premises[1].key]: responses[1].key,
-  },
-  hint: '',
-});
+export const initState: DataInitializer = (config): ElementData => {
+  const isGradable = config?.isGradable ?? true;
+  const premises = Array.from({ length: 2 }, () => ({
+    key: uuid(),
+    value: '',
+  }));
+  const responses = Array.from({ length: 2 }, () => ({
+    key: uuid(),
+    value: '',
+  }));
+  return {
+    isGradable,
+    embeds: {},
+    question: [],
+    headings: { premise: 'Premise', response: 'Response' },
+    premises,
+    responses,
+    hint: '',
+    ...(isGradable && {
+      correct: {
+        [premises[0].key]: responses[0].key,
+        [premises[1].key]: responses[1].key,
+      },
+    }),
+  };
+};
 
 // Can be loaded from package.json
 export const version = '1.0';
+
+export const isEmpty = (data: ElementData): boolean =>
+  !data.question?.length &&
+  !(data.premises ?? []).some((it) => it.value) &&
+  !(data.responses ?? []).some((it) => it.value);
+
+export const mocks: ElementMocks = {
+  displayContexts: [
+    { name: 'No answer', data: {} },
+    {
+      name: 'Correct answer',
+      data: { response: 0, isCorrect: true, isSubmitted: true },
+    },
+    {
+      name: 'Wrong answer',
+      data: { response: 1, isCorrect: false, isSubmitted: true },
+    },
+  ],
+};
 
 // UI configuration for Tailor CMS
 const ui = {
@@ -43,7 +76,7 @@ const ui = {
   forceFullWidth: true,
 };
 
-export const ai = {
+export const ai: AiConfig = {
   Schema: {
     type: 'json_schema',
     name: 'ce_matching_question',
@@ -78,8 +111,8 @@ export const ai = {
       required: ['question', 'hint', 'headings', 'pairs'],
       additionalProperties: false,
     },
-  } as OpenAISchema,
-  getPrompt: () => `
+  },
+  getPrompt: (): string => `
     Generate a matching question as an object with the following
     properties:
     {
@@ -106,7 +139,7 @@ export const ai = {
       - 'headings' is an object with 'premise' and 'response' headings.
       - 'hint' is an optional hint for the correct solution.
   `,
-  processResponse: (val: any) => {
+  processResponse: (val: any): Partial<ElementData> => {
     const questionId = uuid();
     const question = {
       id: questionId,
@@ -139,15 +172,18 @@ export const ai = {
 
 const manifest: ElementManifest = {
   type,
-  version: '1.0',
+  version,
   name,
-  isComposite: true,
-  isQuestion: true,
-  isGradable: true,
   ssr: false,
+  isQuestion: true,
+  isComposite: true,
+  isGradable: true,
+  showFeedback: false,
   initState,
+  isEmpty,
   ui,
   ai,
+  mocks,
 };
 
 export default manifest;
