@@ -1,10 +1,6 @@
 <template>
-  <QuestionContainer
-    v-bind="{ elementData, embedElementConfig, isReadonly }"
-    :show-feedback="false"
-    @update="emit('update', $event)"
-  >
-    <div class="text-subtitle-2">Answers</div>
+  <div class="tce-matching-question">
+    <div class="text-title-small">Answers</div>
     <VRow class="mt-2">
       <VCol cols="4" offset="1">
         <VTextField
@@ -29,7 +25,7 @@
     </VRow>
     <VSlideYTransition group>
       <VRow
-        v-for="(responseKey, premiseKey) in elementData.correct"
+        v-for="(responseKey, premiseKey) in correctPairs"
         :key="responseKey"
       >
         <VCol cols="4" offset="1">
@@ -61,13 +57,11 @@
             aria-label="Remove answer"
             class="my-3"
             color="primary-darken-4"
+            icon="mdi-close"
             size="x-small"
             variant="text"
-            icon
             @click="removeItem(premiseKey, responseKey)"
-          >
-            <VIcon icon="mdi-close" size="large" />
-          </VBtn>
+          />
         </VCol>
       </VRow>
     </VSlideYTransition>
@@ -77,14 +71,12 @@
         class="mt-4"
         color="primary-darken-4"
         prepend-icon="mdi-plus"
+        text="Add Pair"
         variant="text"
-        rounded
         @click="addItem"
-      >
-        Add Pair
-      </VBtn>
+      />
     </div>
-  </QuestionContainer>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -97,9 +89,11 @@ import {
   shuffle,
   size,
 } from 'lodash-es';
-import { computed, defineEmits, defineProps } from 'vue';
-import { Element } from '@tailor-cms/ce-matching-question-manifest';
-import { QuestionContainer } from '@tailor-cms/core-components';
+import type {
+  Element,
+  ElementData,
+} from '@tailor-cms/ce-matching-question-manifest';
+import { computed } from 'vue';
 import { v4 as uuid } from 'uuid';
 
 const PAIRS_LIMIT = Object.freeze({
@@ -114,10 +108,13 @@ const props = defineProps<{
   isFocused: boolean;
   isReadonly: boolean;
 }>();
-const emit = defineEmits(['save', 'update']);
+const emit = defineEmits<{
+  update: [data: Partial<ElementData>];
+}>();
 
 const elementData = computed(() => props.element.data);
-const pairsCount = computed(() => size(elementData.value.correct));
+const correctPairs = computed(() => elementData.value.correct ?? {});
+const pairsCount = computed(() => size(correctPairs.value));
 const headings = computed(() => elementData.value.headings);
 
 const getPremiseContent = (key: string) => getPremiseItem(key)?.value;
@@ -148,7 +145,7 @@ const updateResponseContent = (key: string, value: string) => {
 };
 
 const addItem = () => {
-  const { premises, responses, correct } = cloneDeep(elementData.value);
+  const { correct = {}, premises, responses } = cloneDeep(elementData.value);
   const premiseKey = uuid();
   const responseKey = uuid();
   premises.push({ key: premiseKey, value: '' });
@@ -162,7 +159,7 @@ const addItem = () => {
 };
 
 const removeItem = (premiseKey: string, responseKey: string) => {
-  const { premises, responses, correct } = cloneDeep(elementData.value);
+  const { correct = {}, premises, responses } = cloneDeep(elementData.value);
   remove(premises, { key: premiseKey });
   remove(responses, { key: responseKey });
   delete correct[premiseKey];
@@ -171,7 +168,7 @@ const removeItem = (premiseKey: string, responseKey: string) => {
 </script>
 
 <style lang="scss" scoped>
-.tce-container {
+.tce-matching-question {
   text-align: left;
 }
 </style>

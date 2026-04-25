@@ -1,20 +1,11 @@
 <template>
-  <QuestionContainer
-    :data="element.data"
-    :is-correct="userState.isCorrect"
-    :is-submitted="isSubmitted"
-    allowed-retake
-    is-graded
-    @retry="isSubmitted = false"
-    @submit="submit"
-  >
-    <!-- <div class="text-subtitle-2 mb-2">Select correct answer for each:</div> -->
+  <div class="tce-matching-question">
     <div
       v-for="premise in element.data.premises"
       :key="premise.key"
-      class="text-subtitle-2 mt-4"
+      class="text-title-small mt-4"
     >
-      <div class="mb-2">
+      <div class="mb-4">
         <span class="font-weight-bold">
           {{ element.data.headings.premise }}:
         </span>
@@ -23,9 +14,9 @@
       <VSelect
         :items="element.data.responses"
         :label="element.data.headings.response"
+        :model-value="answer[premise.key]"
         :readonly="isSubmitted"
         :rules="[requiredRule]"
-        bg-color="white"
         hide-details="auto"
         item-title="value"
         item-value="key"
@@ -37,31 +28,32 @@
         </template>
       </VSelect>
     </div>
-  </QuestionContainer>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { cloneDeep } from 'lodash-es';
-import { Element } from '@tailor-cms/ce-matching-question-manifest';
-import { QuestionContainer } from '@tailor-cms/lx-components';
+import type { Element } from '@tailor-cms/ce-matching-question-manifest';
 
 const initializeAnswer = () => cloneDeep(props.userState?.response) ?? {};
 
 const props = defineProps<{ element: Element; userState: any }>();
-const emit = defineEmits(['interaction']);
+const emit = defineEmits<{
+  'user-input': [data: { response: Record<string, string> }];
+}>();
 
-const isSubmitted = ref(!!props.userState.isSubmitted);
-const answer = ref(initializeAnswer());
+const isSubmitted = ref(!!props.userState?.isSubmitted);
+const answer = ref<Record<string, string>>(initializeAnswer());
 
 const requiredRule = (val: string | boolean | number) => {
   return !!val || 'You have to select an answer.';
 };
 
-const submit = () => emit('interaction', { response: answer.value });
+watch(answer, (val) => emit('user-input', { response: val }), { deep: true });
 
 const iconProps = (uuid: string) => {
-  const { response, correct } = props.userState;
+  const { response, correct } = props.userState ?? {};
   const isCorrect = response?.[uuid] === correct?.[uuid];
   if (isCorrect) return { icon: 'mdi-check-circle', color: 'success' };
   return { icon: 'mdi-close-circle', color: 'error' };

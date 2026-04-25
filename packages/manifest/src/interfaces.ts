@@ -12,7 +12,7 @@ export interface ElementData extends common.ElementConfig {
   headings: Record<string, string>;
   premises: DataInput[];
   responses: DataInput[];
-  correct: Record<string, string>;
+  correct?: Record<string, string>;
   hint: string;
 }
 
