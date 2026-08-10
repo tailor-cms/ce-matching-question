@@ -1,13 +1,13 @@
-# @tailor-cms/ce-matching-question-edit
+# @tailor-cms/ce-matching-question-server
 
-Authoring component for the **Matching Question** content element in [Tailor CMS](https://github.com/tailor-cms/author).
+Server-side module for the **Matching Question** content element in [Tailor CMS](https://github.com/tailor-cms/author).
 
-Renders the element inside the Tailor authoring interface, where content is created and edited.
+Provides the server half of the element: state initialisation, lifecycle hooks and any AI configuration, registered by the Tailor server runtime.
 
 ## Installation
 
 ```sh
-npm install @tailor-cms/ce-matching-question-edit
+npm install @tailor-cms/ce-matching-question-server
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ registry rather than imported directly, but the package can be consumed on its
 own:
 
 ```ts
-import { Edit } from '@tailor-cms/ce-matching-question-edit';
+import serverModule from '@tailor-cms/ce-matching-question-server';
 ```
 
 ## Element
