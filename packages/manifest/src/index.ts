@@ -175,7 +175,6 @@ const manifest: ElementManifest = {
   isQuestion: true,
   isComposite: true,
   isGradable: true,
-  showFeedback: false,
   initState,
   isEmpty,
   ui,

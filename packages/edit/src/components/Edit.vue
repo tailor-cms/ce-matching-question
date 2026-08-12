@@ -56,9 +56,9 @@
             v-if="!isReadonly && pairsCount > PAIRS_LIMIT.MIN"
             aria-label="Remove answer"
             class="my-3"
-            color="primary-darken-4"
+            density="comfortable"
             icon="mdi-close"
-            size="x-small"
+            size="small"
             variant="text"
             @click="removeItem(premiseKey, responseKey)"
           />
@@ -69,7 +69,6 @@
       <VBtn
         v-if="!isReadonly && pairsCount < PAIRS_LIMIT.MAX"
         class="mt-4"
-        color="primary-darken-4"
         prepend-icon="mdi-plus"
         text="Add Pair"
         variant="text"
