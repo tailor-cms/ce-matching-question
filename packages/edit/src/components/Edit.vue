@@ -1,79 +1,102 @@
 <template>
   <div class="tce-matching-question">
-    <div class="text-title-small">Answers</div>
-    <VRow class="mt-2">
-      <VCol cols="4" offset="1">
+    <div class="mb-4">
+      <div class="d-flex align-center ga-3 mb-3">
+        <div class="pair-index" />
         <VTextField
           :model-value="elementData.headings.premise"
           :readonly="isReadonly"
           :rules="[(val: string) => !!val || 'Premise heading is required']"
+          density="comfortable"
+          hide-details="auto"
           label="Premise heading"
           variant="outlined"
           @update:model-value="updateHeading('premise', $event)"
         />
-      </VCol>
-      <VCol cols="4" offset="2">
+        <div class="pair-arrow" />
         <VTextField
           :model-value="elementData.headings.response"
           :readonly="isReadonly"
           :rules="[(val: string) => !!val || 'Response heading is required']"
+          density="comfortable"
+          hide-details="auto"
           label="Response heading"
           variant="outlined"
           @update:model-value="updateHeading('response', $event)"
         />
-      </VCol>
-    </VRow>
-    <VSlideYTransition group>
-      <VRow
-        v-for="(responseKey, premiseKey) in correctPairs"
-        :key="responseKey"
-      >
-        <VCol cols="4" offset="1">
+        <div v-if="!isReadonly" class="pair-action" />
+      </div>
+      <VSlideYTransition group>
+        <div
+          v-for="(responseKey, premiseKey, index) in correctPairs"
+          :key="responseKey"
+          class="d-flex align-center ga-3 my-2"
+        >
+          <VAvatar
+            :text="String(index + 1)"
+            class="pair-index text-label-medium font-weight-semibold"
+            color="surface-container-highest"
+            rounded="lg"
+            size="small"
+          />
           <VTextField
             :model-value="getPremiseContent(premiseKey)"
             :readonly="isReadonly"
             :rules="[(val: string) => !!val || 'Premise is required']"
+            density="comfortable"
             placeholder="Premise value..."
             variant="outlined"
+            hide-details
             @update:model-value="updatePremiseContent(premiseKey, $event)"
           />
-        </VCol>
-        <VCol class="text-center" cols="2">
-          <VIcon class="my-5" icon="mdi-arrow-right" size="x-small" />
-        </VCol>
-        <VCol cols="4">
+          <VIcon
+            class="pair-arrow"
+            color="grey"
+            icon="mdi-arrow-right"
+            size="small"
+          />
           <VTextField
             :model-value="getResponseContent(responseKey)"
             :readonly="isReadonly"
             :rules="[(val: string) => !!val || 'Response is required']"
+            density="comfortable"
             placeholder="Response value..."
             variant="outlined"
+            hide-details
             @update:model-value="updateResponseContent(responseKey, $event)"
           />
-        </VCol>
-        <VCol cols="1">
           <VBtn
-            v-if="!isReadonly && pairsCount > PAIRS_LIMIT.MIN"
+            v-if="!isReadonly"
+            :disabled="pairsCount <= PAIRS_LIMIT.MIN"
             aria-label="Remove answer"
-            class="my-3"
             density="comfortable"
             icon="mdi-close"
             size="small"
             variant="text"
             @click="removeItem(premiseKey, responseKey)"
           />
-        </VCol>
-      </VRow>
-    </VSlideYTransition>
-    <div class="d-flex justify-center mb-4">
-      <VBtn
-        v-if="!isReadonly && pairsCount < PAIRS_LIMIT.MAX"
-        class="mt-4"
-        prepend-icon="mdi-plus"
-        text="Add Pair"
-        variant="text"
-        @click="addItem"
+        </div>
+      </VSlideYTransition>
+      <VInput
+        :rules="pairsValidation"
+        :validation-value="[elementData.premises, elementData.responses]"
+        hide-details="auto"
       />
+      <div
+        v-if="!isReadonly && pairsCount < PAIRS_LIMIT.MAX"
+        class="d-flex align-center ga-3 mt-2"
+      >
+        <div class="pair-index" />
+        <div class="d-flex flex-grow-1 justify-center">
+          <VBtn
+            prepend-icon="mdi-plus"
+            text="Add Pair"
+            variant="text"
+            @click="addItem"
+          />
+        </div>
+        <div class="pair-action" />
+      </div>
     </div>
   </div>
 </template>
@@ -115,6 +138,15 @@ const elementData = computed(() => props.element.data);
 const correctPairs = computed(() => elementData.value.correct ?? {});
 const pairsCount = computed(() => size(correctPairs.value));
 const headings = computed(() => elementData.value.headings);
+
+// One message for the whole list; the per-field rules only paint the outline.
+const pairsValidation = [
+  () => {
+    const { premises, responses } = elementData.value;
+    const isFilled = [...premises, ...responses].every((it) => !!it.value);
+    return isFilled || 'All pair values are required';
+  },
+];
 
 const getPremiseContent = (key: string) => getPremiseItem(key)?.value;
 const getResponseContent = (key: string) => getResponseItem(key)?.value;
@@ -169,5 +201,22 @@ const removeItem = (premiseKey: string, responseKey: string) => {
 <style lang="scss" scoped>
 .tce-matching-question {
   text-align: left;
+}
+
+// Fixed columns, so the heading row and the add button line up with the pairs.
+// Widths match the controls in them: index avatar, arrow icon, remove button.
+.pair-index {
+  flex: none;
+  width: 32px;
+}
+
+.pair-arrow {
+  flex: none;
+  width: 1.5rem;
+}
+
+.pair-action {
+  flex: none;
+  width: 28px;
 }
 </style>
