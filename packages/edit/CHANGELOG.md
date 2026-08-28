@@ -1,5 +1,11 @@
 # @tailor-cms/ce-matching-question-edit
 
+## 2.1.2
+
+### Patch Changes
+
+- Tweak spacings.
+
 ## 2.1.1
 
 ### Patch Changes
