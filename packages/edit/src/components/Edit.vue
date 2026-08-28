@@ -1,5 +1,5 @@
 <template>
-  <div class="tce-matching-question">
+  <div class="tce-matching-question mx-2 mb-6">
     <div class="mb-4">
       <div class="d-flex align-center ga-3 mb-3">
         <div class="pair-index" />
@@ -203,18 +203,7 @@ const removeItem = (premiseKey: string, responseKey: string) => {
   text-align: left;
 }
 
-// Fixed columns, so the heading row and the add button line up with the pairs.
-// Widths match the controls in them: index avatar, arrow icon, remove button.
-.pair-index {
-  flex: none;
-  width: 32px;
-}
-
-.pair-arrow {
-  flex: none;
-  width: 1.5rem;
-}
-
+// Reserves the remove button's column in the heading and add rows.
 .pair-action {
   flex: none;
   width: 28px;
