@@ -11,7 +11,7 @@
   "homepage": "https://github.com/tailor-cms/ce-matching-question#readme",
   "bugs": "https://github.com/tailor-cms/ce-matching-question/issues",
   "type": "module",
-  "version": "2.1.2",
+  "version": "3.0.0",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
