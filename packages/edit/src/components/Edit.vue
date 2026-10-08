@@ -208,4 +208,14 @@ const removeItem = (premiseKey: string, responseKey: string) => {
   flex: none;
   width: 28px;
 }
+
+.pair-index {
+  flex: none;
+  width: 2rem;
+}
+
+.pair-arrow {
+  flex: none;
+  width: 1.5rem;
+}
 </style>
